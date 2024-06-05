@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <script>
+        async function getProfile() {
+            try {
+                const response = await fetch('/get-profile');
+                const data = await response.json();
+                if (data) {
+                    document.getElementById('name').value = data.name || '';
+                    document.getElementById('email').value = data.email || '';
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            }
+        }
+
+        async function updateProfile(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+
+            const response = await fetch('/update-profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, email })
+            });
+
+            if (response.ok) {
+                alert('Profile updated successfully!');
+            } else {
+                alert('Failed to update profile.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', getProfile);
+    </script>
+</head>
+<body>
+<h1>User Profile</h1>
+<form onsubmit="updateProfile(event)">
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+    <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+    </div>
+    <button type="submit">Update Profile</button>
+</form>
+</body>
+</html>
